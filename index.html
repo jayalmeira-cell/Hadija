@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kwa Hadija 💖</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  font-family:'Poppins',sans-serif;
+  background:linear-gradient(to bottom,#ffdde1,#ee9ca7);
+  overflow:hidden;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
+
+.container{
+  text-align:center;
+  background:white;
+  padding:20px;
+  border-radius:20px;
+  width:95%;
+  max-width:400px;
+}
+
+h1{color:#ff4d6d}
+
+#question{
+  margin:15px 0;
+  font-size:1.1rem;
+}
+
+button{
+  padding:10px 18px;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:bold;
+  margin:5px;
+}
+
+#yesBtn{background:#ff4d6d;color:white;}
+#noBtn{background:#6a0dad;color:white;position:fixed;}
+
+footer{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  text-align:center;
+  color:#ff4d6d;
+  background:white;
+  padding:8px;
+  font-size:0.9rem;
+}
+
+.emoji{
+  position:absolute;
+  font-size:2rem;
+  animation:float 2s linear forwards;
+}
+
+@keyframes float{
+  0%{opacity:1;transform:translateY(0);}
+  100%{opacity:0;transform:translateY(-150px);}
+}
+
+.note{
+  position:absolute;
+  background:#fffdd0;
+  padding:6px 10px;
+  border-radius:8px;
+}
+
+canvas{
+  border:1px solid #000;
+  border-radius:10px;
+  margin-top:10px;
+  width:100%;
+  height:150px;
+}
+
+.signature-line{
+  border-bottom:2px solid black;
+  height:40px;
+  position:relative;
+}
+
+.signature-input{
+  position:absolute;
+  width:100%;
+  height:100%;
+  border:none;
+  background:transparent;
+  outline:none;
+}
+
+#saveBtn{
+  margin-top:10px;
+  background:#28a745;
+  color:white;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h1>Habari Hadija 💖</h1>
+  <div id="question">Je, unanipenda?</div>
+
+  <button id="yesBtn">NDIO</button>
+  <button id="noBtn">HAPANA</button>
+</div>
+
+<footer>© 2026 All copies reserved</footer>
+
+<audio id="noSound" src="https://www.soundjay.com/button/beep-07.mp3"></audio>
+<audio id="yesSound" src="https://www.soundjay.com/button/button-3.mp3"></audio>
+
+<script>
+const questions = [
+"Je, unanipenda?",
+"Je, utaendelea kuwa nami daima?",
+"Je, unanikosa?",
+"Je, ungependa kusafiri nami?",
+"Je, utanishika mkono daima?",
+"Je, unanikumbuka mara kwa mara?",
+"Je, unapenda tabasamu langu?",
+"Je, tutacheka pamoja?",
+"Je, ungependa kujenga maisha pamoja nami?",
+"Je, utanisaidia?",
+"Je, unafurahia kuwa nami?",
+"Je, utakuwa furaha yangu?",
+"Je, ungependa tuwe pamoja kila siku?",
+"Je, utaniniamini?",
+"Je, ungependa upendo wetu udumu?",
+"Je, utashirikiana ndoto zako nami?",
+"Je, unapenda muda tunaokaa pamoja?",
+"Je, utakuwa mwaminifu?",
+"Je, ungependa tuwe pamoja milele?",
+"Je, utakuwa mke wangu? 💍"
+];
+
+const noTexts = [
+"Acha 😡","Hapana haiwezekani!","Jaribu tena 😢",
+"Usifanye hivyo!","Huwezi kutoroka!","Lazima useme NDIO!",
+"Njoo 😏","Huwezi kuondoka!","Rudi hapa!","Usikimbie!"
+];
+
+let index=0;
+const q=document.getElementById("question");
+const yes=document.getElementById("yesBtn");
+const no=document.getElementById("noBtn");
+
+// YES emojis
+function yesReaction(){
+  const emojis=["💖","😍","🥰","💕"];
+  for(let i=0;i<5;i++){
+    let e=document.createElement("div");
+    e.className="emoji";
+    e.innerText=emojis[Math.floor(Math.random()*emojis.length)];
+    e.style.left=Math.random()*100+"vw";
+    e.style.top=Math.random()*100+"vh";
+    document.body.appendChild(e);
+    setTimeout(()=>e.remove(),2000);
+  }
+}
+
+yes.onclick=()=>{
+  document.getElementById("yesSound").play();
+  yesReaction();
+  index++;
+
+  if(index<questions.length){
+    q.innerText=questions[index];
+  }else{
+    document.body.innerHTML=`
+    <div style="text-align:center;padding:20px">
+      <h2>💖 Asante Hadija 💖</h2>
+      <p>Ninakubali kwa moyo wangu wote 💕</p>
+
+      <div class="signature-line">
+        <input class="signature-input" placeholder="Andika herufi zako"/>
+      </div>
+
+      <canvas id="c"></canvas>
+      <button id="saveBtn">Hifadhi</button>
+    </div>
+    <footer>© 2026 All copies reserved</footer>
+    `;
+
+    const canvas=document.getElementById("c");
+    const ctx=canvas.getContext("2d");
+    canvas.width=300;
+
+    let draw=false;
+    canvas.onmousedown=()=>draw=true;
+    canvas.onmouseup=()=>draw=false;
+    canvas.onmousemove=e=>{
+      if(draw){
+        ctx.lineTo(e.offsetX,e.offsetY);
+        ctx.stroke();
+      }
+    };
+
+    document.getElementById("saveBtn").onclick=()=>{
+      let a=document.createElement("a");
+      a.href=canvas.toDataURL();
+      a.download="sahihi.png";
+      a.click();
+    };
+  }
+};
+
+// NO button
+let moving=false;
+function move(){
+  no.style.left=Math.random()*window.innerWidth+"px";
+  no.style.top=Math.random()*window.innerHeight+"px";
+}
+
+function chaos(){
+  if(moving){
+    move();
+    setTimeout(chaos,1500);
+  }
+}
+
+no.onclick=()=>{
+  moving=true;
+  chaos();
+  document.getElementById("noSound").play();
+
+  let note=document.createElement("div");
+  note.className="note";
+  note.innerText=noTexts[Math.floor(Math.random()*noTexts.length)];
+  note.style.left="50%";
+  note.style.top="50%";
+  document.body.appendChild(note);
+  setTimeout(()=>note.remove(),1500);
+
+  let e=document.createElement("div");
+  e.className="emoji";
+  e.innerText="😡";
+  e.style.left="50%";
+  e.style.top="50%";
+  document.body.appendChild(e);
+  setTimeout(()=>e.remove(),1500);
+};
+</script>
+
+</body>
+</html>
